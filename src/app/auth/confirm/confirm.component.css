@@ -1,0 +1,37 @@
+.confirm-page {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.confirm-card {
+  width: min(520px, 100%);
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px var(--shadow-color);
+  padding: 1.5rem;
+}
+
+.error {
+  color: #b00020;
+}
+
+.success {
+  color: #1b5e20;
+}
+
+.btn-link {
+  display: inline-block;
+  margin-top: 1rem;
+  background: var(--primary-color);
+  color: #fff;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+}
+
+.btn-link:hover {
+  text-decoration: none;
+  opacity: 0.95;
+}
+

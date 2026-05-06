@@ -1,86 +1,73 @@
 .catalog-main-content {
-  max-width: 1000px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  background-color: var(--card-background);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px var(--shadow-color);
+  max-width: 1100px;
+  margin: 1rem auto 2rem;
+  padding: 1rem;
 }
 
-h1 {
-  margin: 0 0 1rem;
-  color: var(--primary-color);
+.catalog-head {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.catalog-subtitle {
+  color: var(--muted);
+  margin: 0.25rem 0 0;
 }
 
 .table-block {
   margin-top: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 1rem;
 }
 
 .table-block h2 {
   margin: 0 0 0.75rem;
-  color: var(--primary-color);
-}
-
-.primary-btn {
-  background-color: var(--primary-color);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.6rem 1rem;
-  cursor: pointer;
-  margin-bottom: 0.75rem;
-}
-
-.primary-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.create-socio-form {
-  display: grid;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  background: #fff;
-}
-
-.create-socio-form label {
-  display: grid;
-  gap: 0.25rem;
-  font-weight: 500;
-}
-
-.create-socio-form input {
-  padding: 0.5rem;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
 }
 
 .form-error {
   margin: 0;
-  color: #c62828;
+  color: var(--brand-red);
+  font-weight: 800;
 }
 
 .table-wrapper {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .socios-table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: transparent;
+  min-width: 620px;
 }
 
 .socios-table th,
 .socios-table td {
   padding: 0.75rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border);
   text-align: left;
 }
 
 .socios-table th {
-  font-weight: 600;
-  color: var(--primary-color);
+  font-weight: 900;
+  color: var(--brand-blue);
+}
+
+/* Ajustes mobile-first */
+@media (max-width: 720px) {
+  .catalog-main-content {
+    padding: 0.75rem;
+  }
+
+  .table-block {
+    padding: 0.85rem;
+  }
 }

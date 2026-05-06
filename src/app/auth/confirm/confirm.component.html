@@ -1,0 +1,14 @@
+<div class="confirm-page">
+  <div class="confirm-card">
+    <h2>Confirmación de cuenta</h2>
+
+    <p *ngIf="isLoading">Confirmando…</p>
+
+    <p *ngIf="!isLoading" [class.error]="isError" [class.success]="!isError">
+      {{ message }}
+    </p>
+
+    <a routerLink="/login" class="btn-link">Ir a iniciar sesión</a>
+  </div>
+</div>
+

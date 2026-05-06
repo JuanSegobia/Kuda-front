@@ -1,30 +1,25 @@
 <header class="app-header">
-  <a routerLink="/catalogo" class="logo-container">
-    <span class="brand-text">Gimnasio Kuda</span>
-  </a>
+  <div class="app-header-inner">
+    <a routerLink="/catalogo" class="brand" aria-label="Ir al inicio">
+      <div class="logo-slot" aria-hidden="true">LOG</div>
+      <div class="brand-text">
+        <strong>CEF Actividades</strong>
+        <span>Centro de bienestar</span> 
+      </div>
+    </a>
 
-  <nav class="main-nav">
-    <a routerLink="/catalogo">Catálogo</a>
-    <a>Iniciar Sesión</a>
-    <a>Panel Admin</a>
-  </nav>
+    <nav class="main-nav" aria-label="Navegación principal">
+      <a class="nav-link" routerLink="/catalogo">Actividades</a>
+      <a class="nav-link" routerLink="/login">Ingresar</a>
+      <a class="nav-link" routerLink="/admin">Admin</a>
+    </nav>
+  </div>
 </header>
 
 <router-outlet></router-outlet>
 
 <footer class="app-footer">
-  <p>&copy; 2025 Gimnasio Kuda. Todos los derechos reservados.</p>
+  <div class="container">
+    <p>&copy; 2026 CEF Actividades. Todos los derechos reservados.</p>
+  </div>
 </footer>
-
-<style>
-  .app-footer {
-    background-color: var(--primary-color);
-    color: #ffffff;
-    text-align: center;
-    padding: 1rem;
-    margin-top: 2rem;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    box-shadow: 0 -2px 4px var(--shadow-color);
-  }
-</style>
