@@ -1,0 +1,144 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { RouterLink } from '@angular/router';
+
+import { AuthService, RegisterRequest } from '../../services/auth.service';
+
+@Component({
+  selector: 'app-register',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.css',
+})
+export class RegisterComponent {
+  isSubmitting = false;
+  submitError = '';
+  successMessage = '';
+
+  readonly form = new FormGroup(
+    {
+      nombre: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+      apellido: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+      dni: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(7), Validators.maxLength(10)],
+      }),
+      email: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.email],
+      }),
+      genero: new FormControl<'femenino' | 'masculino' | 'otro'>('otro', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      anioNacimiento: new FormControl<number | null>(null, {
+        validators: [Validators.required],
+      }),
+      telefono: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(6)],
+      }),
+      fichaMedicaFile: new FormControl<File | null>(null, {
+        validators: [Validators.required],
+      }),
+      password: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(8)],
+      }),
+      confirmPassword: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(8)],
+      }),
+    },
+    { validators: [RegisterComponent.passwordsMatchValidator] }
+  );
+
+  fichaMedicaFileName = '';
+  fichaMedicaEncoded: string | null = null;
+
+  constructor(private readonly auth: AuthService) {}
+
+  onSubmit(): void {
+    this.submitError = '';
+    this.successMessage = '';
+
+    this.form.markAllAsTouched();
+    if (this.form.invalid || this.isUnder14()) return;
+
+    this.isSubmitting = true;
+
+    const req: RegisterRequest = {
+      nombre: this.form.controls.nombre.value.trim(),
+      apellido: this.form.controls.apellido.value.trim(),
+      dni: this.form.controls.dni.value.trim(),
+      email: this.form.controls.email.value.trim(),
+      genero: this.form.controls.genero.value,
+      // El back calcula edad desde fechaNacimiento. Usamos 01-01 del año.
+      fechaNacimiento: `${this.form.controls.anioNacimiento.value}-01-01`,
+      telefono: this.form.controls.telefono.value.trim(),
+      fichaMedica: this.fichaMedicaEncoded ?? undefined,
+      password: this.form.controls.password.value,
+      confirmPassword: this.form.controls.confirmPassword.value,
+    };
+
+    this.auth.register(req).subscribe({
+      next: (resp) => {
+        this.isSubmitting = false;
+        this.successMessage =
+          resp?.message ??
+          'Registrado. Revisá tu email para confirmar tu cuenta.';
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.submitError =
+          err?.error?.message ??
+          'No se pudo registrar. Verificá los datos.';
+      },
+    });
+  }
+
+  onFichaMedicaSelected(event: Event): void {
+    this.submitError = '';
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    this.form.controls.fichaMedicaFile.setValue(file);
+    this.form.controls.fichaMedicaFile.markAsTouched();
+
+    this.fichaMedicaFileName = file?.name ?? '';
+    this.fichaMedicaEncoded = null;
+
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : '';
+      // Guardamos como DataURL para no tocar el back (string).
+      this.fichaMedicaEncoded = result || null;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  isUnder14(): boolean {
+    const year = this.form.controls.anioNacimiento.value;
+    if (!year) return false;
+    const currentYear = new Date().getFullYear();
+    const age = currentYear - Number(year);
+    return age <= 14;
+  }
+
+  private static passwordsMatchValidator(group: AbstractControl) {
+    const password = group.get('password')?.value;
+    const confirm = group.get('confirmPassword')?.value;
+    if (!password || !confirm) return null;
+    return password === confirm ? null : { passwordsMismatch: true };
+  }
+}
+

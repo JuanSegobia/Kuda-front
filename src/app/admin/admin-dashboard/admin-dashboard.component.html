@@ -1,1 +1,262 @@
-<p>admin-dashboard works!</p>
+<div class="admin-page">
+  <div class="admin-header">
+    <h2>Panel Admin</h2>
+
+    <div class="tabs">
+      <button (click)="setTab('planes')" [class.active]="tab === 'planes'">
+        Planes
+      </button>
+      <button (click)="setTab('usuarios')" [class.active]="tab === 'usuarios'">
+        Usuarios
+      </button>
+      <button (click)="setTab('clases')" [class.active]="tab === 'clases'">
+        Clases
+      </button>
+      <button
+        (click)="setTab('profesores')"
+        [class.active]="tab === 'profesores'"
+      >
+        Profesores
+      </button>
+    </div>
+  </div>
+
+  <!-- PLANES -->
+  <section *ngIf="tab === 'planes'" class="card">
+    <div class="card-head">
+      <h3>Planes</h3>
+      <button (click)="refreshPlanes()">Refrescar</button>
+    </div>
+
+    <p class="error" *ngIf="error.planes">{{ error.planes }}</p>
+    <p class="muted" *ngIf="loading.planes">Cargando…</p>
+
+    <div class="grid">
+      <label>
+        <span>Nombre</span>
+        <input [(ngModel)]="createPlan.nombre" />
+      </label>
+      <label>
+        <span>Precio</span>
+        <input type="number" [(ngModel)]="createPlan.precio" />
+      </label>
+      <label>
+        <span>Duración (días)</span>
+        <input type="number" [(ngModel)]="createPlan.duracion_dias" />
+      </label>
+      <div class="actions">
+        <button (click)="onCreatePlan()">Crear plan</button>
+      </div>
+    </div>
+
+    <div class="table">
+      <div class="row head">
+        <div>ID</div>
+        <div>Nombre</div>
+        <div>Precio</div>
+        <div>Duración</div>
+      </div>
+      <div class="row" *ngFor="let p of planes">
+        <div>{{ p.id }}</div>
+        <div>{{ p.nombre }}</div>
+        <div>{{ p.precio }}</div>
+        <div>{{ p.duracion_dias }}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- USUARIOS -->
+  <section *ngIf="tab === 'usuarios'" class="card">
+    <div class="card-head">
+      <h3>Usuarios</h3>
+      <button (click)="refreshUsuarios()">Refrescar</button>
+    </div>
+
+    <p class="error" *ngIf="error.usuarios">{{ error.usuarios }}</p>
+    <p class="muted" *ngIf="loading.usuarios">Cargando…</p>
+
+    <div class="grid grid-2">
+      <label>
+        <span>DNI</span>
+        <input [(ngModel)]="createUsuario.dni" />
+      </label>
+      <label>
+        <span>Nombre de usuario</span>
+        <input [(ngModel)]="createUsuario.nombreUsuario" />
+      </label>
+      <label>
+        <span>Nombre</span>
+        <input [(ngModel)]="createUsuario.nombre" />
+      </label>
+      <label>
+        <span>Apellido</span>
+        <input [(ngModel)]="createUsuario.apellido" />
+      </label>
+      <label>
+        <span>Contraseña</span>
+        <input type="password" [(ngModel)]="createUsuario.password" />
+      </label>
+      <label>
+        <span>Dirección</span>
+        <input [(ngModel)]="createUsuario.direccion" />
+      </label>
+      <label>
+        <span>Edad</span>
+        <input type="number" [(ngModel)]="createUsuario.edad" />
+      </label>
+      <label>
+        <span>Rol ID</span>
+        <input type="number" [(ngModel)]="createUsuario.rol_id" />
+      </label>
+      <div class="actions">
+        <button (click)="onCreateUsuario()">Crear usuario</button>
+      </div>
+    </div>
+
+    <div class="table">
+      <div class="row head">
+        <div>ID</div>
+        <div>Nombre</div>
+        <div>Apellido</div>
+        <div>DNI</div>
+        <div>Activo</div>
+        <div></div>
+      </div>
+      <div class="row" *ngFor="let u of usuarios">
+        <div>{{ u.id }}</div>
+        <div>{{ u.nombre }}</div>
+        <div>{{ u.apellido }}</div>
+        <div>{{ u.dni }}</div>
+        <div>{{ u.activo ? 'Sí' : 'No' }}</div>
+        <div class="right">
+          <button class="danger" (click)="onDeleteUsuario(u.id)">
+            Dar de baja
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLASES -->
+  <section *ngIf="tab === 'clases'" class="card">
+    <div class="card-head">
+      <h3>Clases</h3>
+      <button (click)="refreshClases()">Refrescar</button>
+    </div>
+
+    <p class="error" *ngIf="error.clases">{{ error.clases }}</p>
+    <p class="muted" *ngIf="loading.clases">Cargando…</p>
+
+    <div class="grid grid-2">
+      <label>
+        <span>Día</span>
+        <select [(ngModel)]="createClase.dia_semana">
+          <option>Lunes</option>
+          <option>Martes</option>
+          <option>Miércoles</option>
+          <option>Jueves</option>
+          <option>Viernes</option>
+          <option>Sábado</option>
+          <option>Domingo</option>
+        </select>
+      </label>
+      <label>
+        <span>Hora inicio</span>
+        <input type="time" [(ngModel)]="createClase.hora_inicio" />
+      </label>
+      <label>
+        <span>Hora fin</span>
+        <input type="time" [(ngModel)]="createClase.hora_fin" />
+      </label>
+      <label>
+        <span>Cupo</span>
+        <input type="number" [(ngModel)]="createClase.cupo" />
+      </label>
+      <label>
+        <span>Actividad ID</span>
+        <input type="number" [(ngModel)]="createClase.actividad_id" />
+      </label>
+      <label>
+        <span>Sala ID</span>
+        <input type="number" [(ngModel)]="createClase.sala_id" />
+      </label>
+      <label>
+        <span>Profesor ID</span>
+        <input type="number" [(ngModel)]="createClase.profesor_id" />
+      </label>
+      <div class="actions">
+        <button (click)="onCreateClase()">Agendar clase</button>
+      </div>
+    </div>
+
+    <div class="table">
+      <div class="row head">
+        <div>ID</div>
+        <div>Día</div>
+        <div>Inicio</div>
+        <div>Fin</div>
+        <div>Cupo</div>
+        <div>Activa</div>
+      </div>
+      <div class="row" *ngFor="let c of clases">
+        <div>{{ c.id }}</div>
+        <div>{{ c.dia_semana }}</div>
+        <div>{{ c.hora_inicio }}</div>
+        <div>{{ c.hora_fin }}</div>
+        <div>{{ c.cupo }}</div>
+        <div>{{ c.activa ? 'Sí' : 'No' }}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROFESORES -->
+  <section *ngIf="tab === 'profesores'" class="card">
+    <div class="card-head">
+      <h3>Profesores</h3>
+      <button (click)="refreshProfesores()">Refrescar</button>
+    </div>
+
+    <p class="error" *ngIf="error.profesores">{{ error.profesores }}</p>
+    <p class="muted" *ngIf="loading.profesores">Cargando…</p>
+
+    <div class="grid grid-2">
+      <label>
+        <span>Nombre</span>
+        <input [(ngModel)]="createProfesor.nombre" />
+      </label>
+      <label>
+        <span>Apellido</span>
+        <input [(ngModel)]="createProfesor.apellido" />
+      </label>
+      <label>
+        <span>DNI</span>
+        <input [(ngModel)]="createProfesor.dni" />
+      </label>
+      <label>
+        <span>Actividades (IDs, separados por coma)</span>
+        <input
+          placeholder="Ej: 1,2,3"
+          [(ngModel)]="createProfesor.actividadesCsv"
+        />
+      </label>
+      <div class="actions">
+        <button (click)="onCreateProfesor()">Registrar profesor</button>
+      </div>
+    </div>
+
+    <div class="table">
+      <div class="row head">
+        <div>ID</div>
+        <div>Apellido</div>
+        <div>Nombre</div>
+        <div>DNI</div>
+      </div>
+      <div class="row" *ngFor="let p of profesores">
+        <div>{{ p.id }}</div>
+        <div>{{ p.apellido }}</div>
+        <div>{{ p.nombre }}</div>
+        <div>{{ p.dni }}</div>
+      </div>
+    </div>
+  </section>
+</div>
