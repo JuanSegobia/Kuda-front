@@ -1,0 +1,115 @@
+:host {
+  display: block;
+}
+
+.welcome-page {
+  --mx: 50%;
+  --my: 50%;
+
+  position: relative;
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  /*
+    Fondo construido exclusivamente con variables del proyecto:
+    - var(--text) = #0f172a  como base oscura (navy noche)
+    - var(--brand-blue-700) = #1e3a8a  acento azul profundo
+    - var(--brand-red) = #dc2626  toque rojo institucional muy sutil
+  */
+  background:
+    radial-gradient(ellipse 65% 45% at 80% 10%, rgba(220, 38, 38, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 40% at 20% 90%, rgba(220, 38, 38, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(30, 58, 138, 0.5) 0%, transparent 70%),
+    linear-gradient(160deg, #0a1020 0%, #0f172a 60%, #111827 100%);
+}
+
+/* Glow interactivo — usa brand-red y brand-blue-600 con opacidad mínima */
+.glow-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 45% 38% at var(--mx) var(--my),
+      rgba(220, 38, 38, 0.09) 0%,
+      rgba(29, 78, 216, 0.06) 50%,
+      transparent 70%);
+  transition: background 0.14s ease;
+  z-index: 0;
+}
+
+/* Contenido central */
+.welcome-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(20px, 4vh, 36px);
+  padding: clamp(16px, 4vw, 48px);
+  text-align: center;
+  animation: float 5s ease-in-out infinite;
+}
+
+.logo-img {
+  width: clamp(500px, 34vw, 360px);
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/*
+  Botón: hereda todo el estilo de .btn + .btn-danger del sistema global.
+  Solo sobreescribimos forma (pill) y padding para esta pantalla.
+  Colores: var(--brand-red) / var(--brand-red-700) vienen del global.
+*/
+.welcome-btn {
+  padding: 13px 52px;
+  border-radius: 50px;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  box-shadow:
+    0 4px 20px rgba(220, 38, 38, 0.38),
+    0 1px 0 rgba(255, 120, 120, 0.2) inset;
+  transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+}
+
+.welcome-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 28px rgba(220, 38, 38, 0.5),
+    0 1px 0 rgba(255, 120, 120, 0.15) inset;
+  text-decoration: none;
+}
+
+.welcome-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.3);
+}
+
+/* Animación flotante sutil */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .logo-img {
+    width: clamp(200px, 70vw, 280px);
+  }
+
+  .welcome-btn {
+    width: 100%;
+    max-width: 260px;
+    padding: 15px 24px;
+  }
+}
