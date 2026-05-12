@@ -1,6 +1,10 @@
 export interface Plan {
   id: number;
   nombre: string;
-  precio: number;
-  duracion_dias: number;
+  actividad_id: number;
+  tipo: 'MENSUAL' | 'INDIVIDUAL';
+  precio?: number;
+  duracion_dias?: number;
+  activo: boolean;
+  actividad?: { id: number; nombre: string };
 }

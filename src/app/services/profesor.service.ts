@@ -7,7 +7,8 @@ export interface Profesor {
   nombre: string;
   apellido: string;
   dni: string;
-  actividades?: unknown[];
+  activo: boolean;
+  actividades?: { id: number; nombre: string }[];
 }
 
 export interface CreateProfesorDto {

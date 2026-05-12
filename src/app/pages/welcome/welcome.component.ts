@@ -1,5 +1,6 @@
-import { Component, HostListener, ElementRef } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, HostListener, ElementRef, OnInit } from '@angular/core';
+import { RouterLink, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-welcome',
@@ -8,8 +9,19 @@ import { RouterLink } from '@angular/router';
   templateUrl: './welcome.component.html',
   styleUrl: './welcome.component.css',
 })
-export class WelcomeComponent {
-  constructor(private el: ElementRef) {}
+export class WelcomeComponent implements OnInit {
+  constructor(
+    private readonly el: ElementRef,
+    private readonly auth: AuthService,
+    private readonly router: Router
+  ) {}
+
+  ngOnInit(): void {
+    if (this.auth.isLoggedIn()) {
+      const destino = this.auth.isStaff() ? '/admin' : '/catalogo';
+      void this.router.navigateByUrl(destino);
+    }
+  }
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {

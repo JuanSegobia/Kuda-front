@@ -1,0 +1,35 @@
+<div class="container" style="padding-top: 2rem; max-width: 640px;">
+  <div class="card card-pad" *ngIf="usuario">
+    <h2>Mi información</h2>
+    <p class="help">Tus datos personales registrados en el sistema.</p>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">Nombre</span>
+        <span class="info-value">{{ usuario.nombre }} {{ usuario.apellido }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Email</span>
+        <span class="info-value">{{ usuario.email }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">DNI</span>
+        <span class="info-value">{{ usuario.dni }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Teléfono</span>
+        <span class="info-value">{{ usuario.telefono ?? '—' }}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Estado de cuenta</span>
+        <span class="info-value" [class.activo]="usuario.activo" [class.inactivo]="!usuario.activo">
+          {{ usuario.activo ? 'Activa' : 'Inactiva' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="info-actions">
+      <button class="btn btn-primary">Modificar datos personales</button>
+    </div>
+  </div>
+</div>

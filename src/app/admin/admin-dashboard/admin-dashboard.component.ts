@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
-import { Usuario, UsuarioService } from '../../services/usuario.service';
+import { Usuario, UsuarioService, CreateUsuarioDto } from '../../services/usuario.service';
 import { Clase, ClaseService, CreateClaseDto } from '../../services/clase.service';
 import { Profesor, ProfesorService } from '../../services/profesor.service';
-import { CreatePlanDto, PlanService } from '../../services/plan.service';
+import { PlanService } from '../../services/plan.service';
 import { Plan } from '../../models/plan.model';
+import { AuthService, CurrentUser } from '../../services/auth.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -37,15 +39,13 @@ export class AdminDashboardComponent {
     profesores: '',
   };
 
-  createPlan: CreatePlanDto = { nombre: '', precio: 0, duracion_dias: 30 };
-  createUsuario = {
+  createUsuario: CreateUsuarioDto = {
+    email: '',
     dni: '',
-    nombreUsuario: '',
     nombre: '',
     apellido: '',
+    telefono: '',
     password: '',
-    direccion: '',
-    edad: 18,
     rol_id: 2,
   };
   createClase: CreateClaseDto = {
@@ -64,13 +64,23 @@ export class AdminDashboardComponent {
     actividadesCsv: '',
   };
 
+  currentUser: CurrentUser | null = null;
+
   constructor(
     private readonly planService: PlanService,
     private readonly usuarioService: UsuarioService,
     private readonly claseService: ClaseService,
-    private readonly profesorService: ProfesorService
+    private readonly profesorService: ProfesorService,
+    private readonly authService: AuthService,
+    private readonly router: Router
   ) {
+    this.currentUser = this.authService.getCurrentUser();
     this.refreshPlanes();
+  }
+
+  logout(): void {
+    this.authService.logout();
+    void this.router.navigateByUrl('/');
   }
 
   setTab(tab: typeof this.tab): void {
@@ -97,31 +107,6 @@ export class AdminDashboardComponent {
     });
   }
 
-  onCreatePlan(): void {
-    this.error.planes = '';
-    if (!this.createPlan.nombre || Number(this.createPlan.precio) <= 0) {
-      this.error.planes = 'Completá nombre y precio válido.';
-      return;
-    }
-
-    this.planService
-      .createPlan({
-        ...this.createPlan,
-        precio: Number(this.createPlan.precio),
-        duracion_dias: Number(this.createPlan.duracion_dias),
-      })
-      .subscribe({
-        next: () => {
-          this.createPlan = { nombre: '', precio: 0, duracion_dias: 30 };
-          this.refreshPlanes();
-        },
-        error: (err) => {
-          this.error.planes =
-            err?.error?.message ?? 'No se pudo crear el plan.';
-        },
-      });
-  }
-
   refreshUsuarios(): void {
     this.loading.usuarios = true;
     this.error.usuarios = '';
@@ -140,44 +125,24 @@ export class AdminDashboardComponent {
   onCreateUsuario(): void {
     this.error.usuarios = '';
     const u = this.createUsuario;
-    if (
-      !u.dni ||
-      !u.nombreUsuario ||
-      !u.nombre ||
-      !u.apellido ||
-      !u.password ||
-      !u.direccion ||
-      Number(u.edad) <= 0 ||
-      Number(u.rol_id) <= 0
-    ) {
-      this.error.usuarios =
-        'Completá todos los campos (edad/rol_id deben ser válidos).';
+    if (!u.email || !u.dni || !u.nombre || !u.apellido || !u.password || Number(u.rol_id) <= 0) {
+      this.error.usuarios = 'Completá email, DNI, nombre, apellido, contraseña y rol.';
       return;
     }
 
     this.usuarioService
       .create({
+        email: u.email,
         dni: u.dni,
-        nombreUsuario: u.nombreUsuario,
         nombre: u.nombre,
         apellido: u.apellido,
+        telefono: u.telefono || undefined,
         password: u.password,
-        direccion: u.direccion,
-        edad: Number(u.edad),
         rol_id: Number(u.rol_id),
       })
       .subscribe({
         next: () => {
-          this.createUsuario = {
-            dni: '',
-            nombreUsuario: '',
-            nombre: '',
-            apellido: '',
-            password: '',
-            direccion: '',
-            edad: 18,
-            rol_id: 2,
-          };
+          this.createUsuario = { email: '', dni: '', nombre: '', apellido: '', telefono: '', password: '', rol_id: 2 };
           this.refreshUsuarios();
         },
         error: (err) => {
@@ -187,9 +152,9 @@ export class AdminDashboardComponent {
       });
   }
 
-  onDeleteUsuario(id: number): void {
+  onDeleteUsuario(email: string): void {
     this.error.usuarios = '';
-    this.usuarioService.delete(id).subscribe({
+    this.usuarioService.delete(email).subscribe({
       next: () => {
         this.refreshUsuarios();
       },

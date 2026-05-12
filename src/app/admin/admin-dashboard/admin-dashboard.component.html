@@ -2,6 +2,14 @@
   <div class="admin-header">
     <h2>Panel Admin</h2>
 
+    <div class="admin-header-right">
+      <span class="current-user" *ngIf="currentUser">
+        {{ currentUser.nombre }} {{ currentUser.apellido }}
+        <span class="role-badge">{{ currentUser.rol.nombre }}</span>
+      </span>
+      <button class="btn-logout" (click)="logout()">Cerrar sesión</button>
+    </div>
+
     <div class="tabs">
       <button (click)="setTab('planes')" [class.active]="tab === 'planes'">
         Planes
@@ -31,36 +39,20 @@
     <p class="error" *ngIf="error.planes">{{ error.planes }}</p>
     <p class="muted" *ngIf="loading.planes">Cargando…</p>
 
-    <div class="grid">
-      <label>
-        <span>Nombre</span>
-        <input [(ngModel)]="createPlan.nombre" />
-      </label>
-      <label>
-        <span>Precio</span>
-        <input type="number" [(ngModel)]="createPlan.precio" />
-      </label>
-      <label>
-        <span>Duración (días)</span>
-        <input type="number" [(ngModel)]="createPlan.duracion_dias" />
-      </label>
-      <div class="actions">
-        <button (click)="onCreatePlan()">Crear plan</button>
-      </div>
-    </div>
-
     <div class="table">
       <div class="row head">
         <div>ID</div>
         <div>Nombre</div>
-        <div>Precio</div>
-        <div>Duración</div>
+        <div>Actividad</div>
+        <div>Tipo</div>
+        <div>Activo</div>
       </div>
       <div class="row" *ngFor="let p of planes">
         <div>{{ p.id }}</div>
         <div>{{ p.nombre }}</div>
-        <div>{{ p.precio }}</div>
-        <div>{{ p.duracion_dias }}</div>
+        <div>{{ p.actividad?.nombre ?? p.actividad_id }}</div>
+        <div>{{ p.tipo }}</div>
+        <div>{{ p.activo ? 'Sí' : 'No' }}</div>
       </div>
     </div>
   </section>
@@ -77,12 +69,12 @@
 
     <div class="grid grid-2">
       <label>
-        <span>DNI</span>
-        <input [(ngModel)]="createUsuario.dni" />
+        <span>Email</span>
+        <input type="email" [(ngModel)]="createUsuario.email" />
       </label>
       <label>
-        <span>Nombre de usuario</span>
-        <input [(ngModel)]="createUsuario.nombreUsuario" />
+        <span>DNI</span>
+        <input [(ngModel)]="createUsuario.dni" />
       </label>
       <label>
         <span>Nombre</span>
@@ -93,16 +85,12 @@
         <input [(ngModel)]="createUsuario.apellido" />
       </label>
       <label>
+        <span>Teléfono</span>
+        <input [(ngModel)]="createUsuario.telefono" />
+      </label>
+      <label>
         <span>Contraseña</span>
         <input type="password" [(ngModel)]="createUsuario.password" />
-      </label>
-      <label>
-        <span>Dirección</span>
-        <input [(ngModel)]="createUsuario.direccion" />
-      </label>
-      <label>
-        <span>Edad</span>
-        <input type="number" [(ngModel)]="createUsuario.edad" />
       </label>
       <label>
         <span>Rol ID</span>
@@ -115,7 +103,7 @@
 
     <div class="table">
       <div class="row head">
-        <div>ID</div>
+        <div>Email</div>
         <div>Nombre</div>
         <div>Apellido</div>
         <div>DNI</div>
@@ -123,13 +111,13 @@
         <div></div>
       </div>
       <div class="row" *ngFor="let u of usuarios">
-        <div>{{ u.id }}</div>
+        <div>{{ u.email }}</div>
         <div>{{ u.nombre }}</div>
         <div>{{ u.apellido }}</div>
         <div>{{ u.dni }}</div>
         <div>{{ u.activo ? 'Sí' : 'No' }}</div>
         <div class="right">
-          <button class="danger" (click)="onDeleteUsuario(u.id)">
+          <button class="danger" (click)="onDeleteUsuario(u.email)">
             Dar de baja
           </button>
         </div>

@@ -53,19 +53,18 @@
         </div>
 
         <div class="field">
-          <div class="label">Año de nacimiento</div>
+          <div class="label">Fecha de nacimiento</div>
           <input
             class="control"
-            type="number"
-            formControlName="anioNacimiento"
-            inputmode="numeric"
-            placeholder="Ej: 2002"
-            [attr.aria-invalid]="(form.controls.anioNacimiento.touched && form.controls.anioNacimiento.invalid) || isUnder14() ? 'true' : 'false'"
+            type="date"
+            formControlName="fechaNacimiento"
+            [max]="maxFechaNacimiento"
+            [attr.aria-invalid]="(form.controls.fechaNacimiento.touched && form.controls.fechaNacimiento.invalid) || isUnder14() ? 'true' : 'false'"
           />
-          <div class="error-text" *ngIf="form.controls.anioNacimiento.touched && form.controls.anioNacimiento.hasError('required')">
-            El año de nacimiento es obligatorio.
+          <div class="error-text" *ngIf="form.controls.fechaNacimiento.touched && form.controls.fechaNacimiento.hasError('required')">
+            La fecha de nacimiento es obligatoria.
           </div>
-          <div class="error-text" *ngIf="form.controls.anioNacimiento.touched && isUnder14()">
+          <div class="error-text" *ngIf="form.controls.fechaNacimiento.touched && isUnder14()">
             Debés ser mayor de 14 años para registrarte.
           </div>
         </div>

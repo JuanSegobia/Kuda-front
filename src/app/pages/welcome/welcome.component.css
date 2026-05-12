@@ -53,7 +53,7 @@
 }
 
 .logo-img {
-  width: clamp(500px, 34vw, 360px);
+  width: clamp(320px, 48vw, 600px);
   height: auto;
   object-fit: contain;
   display: block;
@@ -101,10 +101,35 @@
   }
 }
 
+.welcome-register {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.welcome-register-text {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.95rem;
+}
+
+.welcome-register-link {
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.welcome-register-link:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
 /* Mobile */
 @media (max-width: 480px) {
   .logo-img {
-    width: clamp(200px, 70vw, 280px);
+    width: clamp(240px, 80vw, 320px);
   }
 
   .welcome-btn {

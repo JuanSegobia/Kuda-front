@@ -20,8 +20,19 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface CurrentUser {
+  email: string;
+  dni: string;
+  nombre: string;
+  apellido: string;
+  telefono?: string;
+  activo: boolean;
+  rol_id: number;
+  rol: { id: number; nombre: string };
+}
+
 export interface LoginResponse {
-  usuario: unknown;
+  usuario: CurrentUser;
   token: string;
 }
 
@@ -31,6 +42,7 @@ export interface LoginResponse {
 export class AuthService {
   private readonly apiUrl = 'http://localhost:3001/api/auth';
   private readonly tokenKey = 'kuda_token';
+  private readonly userKey = 'kuda_user';
 
   constructor(private readonly http: HttpClient) {}
 
@@ -48,23 +60,55 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, data).pipe(
       tap((resp) => {
         if (resp?.token) this.setToken(resp.token);
+        if (resp?.usuario) this.setUser(resp.usuario);
       })
     );
   }
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
   }
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
 
+  getCurrentUser(): CurrentUser | null {
+    const raw = localStorage.getItem(this.userKey);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as CurrentUser;
+    } catch {
+      return null;
+    }
+  }
+
   isLoggedIn(): boolean {
     return Boolean(this.getToken());
   }
 
+  getRol(): string | null {
+    return this.getCurrentUser()?.rol?.nombre ?? null;
+  }
+
+  isAdmin(): boolean {
+    return this.getRol() === 'ADMIN';
+  }
+
+  isRecepcionista(): boolean {
+    return this.getRol() === 'RECEPCIONISTA';
+  }
+
+  isStaff(): boolean {
+    return this.isAdmin() || this.isRecepcionista();
+  }
+
   private setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
+  }
+
+  private setUser(user: CurrentUser): void {
+    localStorage.setItem(this.userKey, JSON.stringify(user));
   }
 }

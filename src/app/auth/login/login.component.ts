@@ -50,7 +50,8 @@ export class LoginComponent {
     this.auth.login({ email, password }).subscribe({
       next: () => {
         this.isSubmitting = false;
-        void this.router.navigateByUrl('/catalogo');
+        const destino = this.auth.isStaff() ? '/admin' : '/catalogo';
+        void this.router.navigateByUrl(destino);
       },
       error: (err) => {
         this.isSubmitting = false;
