@@ -3,25 +3,23 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Usuario {
-  id: number;
+  email: string;
   dni: string;
-  nombreUsuario?: string;
-  nombre?: string;
-  apellido?: string;
-  email?: string;
-  activo?: boolean;
-  rol_id?: number;
-  rol?: unknown;
+  nombre: string;
+  apellido: string;
+  telefono?: string;
+  activo: boolean;
+  rol_id: number;
+  rol?: { id: number; nombre: string };
 }
 
 export interface CreateUsuarioDto {
+  email: string;
   dni: string;
-  nombreUsuario: string;
   nombre: string;
   apellido: string;
+  telefono?: string;
   password: string;
-  direccion: string;
-  edad: number;
   rol_id: number;
 }
 
@@ -35,12 +33,19 @@ export class UsuarioService {
     return this.http.get<Usuario[]>(this.apiUrl);
   }
 
+  getByEmail(email: string): Observable<Usuario> {
+    return this.http.get<Usuario>(`${this.apiUrl}/${encodeURIComponent(email)}`);
+  }
+
   create(data: CreateUsuarioDto): Observable<Usuario> {
     return this.http.post<Usuario>(this.apiUrl, data);
   }
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  update(email: string, data: Partial<CreateUsuarioDto>): Observable<Usuario> {
+    return this.http.put<Usuario>(`${this.apiUrl}/${encodeURIComponent(email)}`, data);
+  }
+
+  delete(email: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${encodeURIComponent(email)}`);
   }
 }
-

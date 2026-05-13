@@ -39,7 +39,8 @@ export class RegisterComponent {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      anioNacimiento: new FormControl<number | null>(null, {
+      fechaNacimiento: new FormControl('', {
+        nonNullable: true,
         validators: [Validators.required],
       }),
       telefono: new FormControl('', {
@@ -81,8 +82,7 @@ export class RegisterComponent {
       dni: this.form.controls.dni.value.trim(),
       email: this.form.controls.email.value.trim(),
       genero: this.form.controls.genero.value,
-      // El back calcula edad desde fechaNacimiento. Usamos 01-01 del año.
-      fechaNacimiento: `${this.form.controls.anioNacimiento.value}-01-01`,
+      fechaNacimiento: this.form.controls.fechaNacimiento.value,
       telefono: this.form.controls.telefono.value.trim(),
       fichaMedica: this.fichaMedicaEncoded ?? undefined,
       password: this.form.controls.password.value,
@@ -127,11 +127,20 @@ export class RegisterComponent {
   }
 
   isUnder14(): boolean {
-    const year = this.form.controls.anioNacimiento.value;
-    if (!year) return false;
-    const currentYear = new Date().getFullYear();
-    const age = currentYear - Number(year);
-    return age <= 14;
+    const fecha = this.form.controls.fechaNacimiento.value;
+    if (!fecha) return false;
+    const hoy = new Date();
+    const nacimiento = new Date(fecha);
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const mes = hoy.getMonth() - nacimiento.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) edad--;
+    return edad <= 14;
+  }
+
+  get maxFechaNacimiento(): string {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() - 14);
+    return d.toISOString().split('T')[0];
   }
 
   private static passwordsMatchValidator(group: AbstractControl) {

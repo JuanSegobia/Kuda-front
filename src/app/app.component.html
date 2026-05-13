@@ -1,17 +1,22 @@
-<header class="app-header">
+<header class="app-header" *ngIf="!hideHeader">
   <div class="app-header-inner">
-    <a routerLink="/catalogo" class="brand" aria-label="Ir al inicio">
-      <div class="logo-slot" aria-hidden="true">LOG</div>
+    <a [routerLink]="logoPath" class="brand" aria-label="Ir al inicio">
+      <img src="LogoSolo.png" alt="" aria-hidden="true" class="logo-slot" style="width:42px;height:42px;object-fit:contain;border:none;background:none;" />
       <div class="brand-text">
         <strong>CEF Actividades</strong>
-        <span>Centro de bienestar</span> 
+        <span>Centro de bienestar</span>
       </div>
     </a>
 
     <nav class="main-nav" aria-label="Navegación principal">
       <a class="nav-link" routerLink="/catalogo">Actividades</a>
-      <a class="nav-link" routerLink="/login">Ingresar</a>
-      <a class="nav-link" routerLink="/admin">Admin</a>
+      <ng-container *ngIf="auth.isLoggedIn(); else noLogueado">
+        <a class="nav-link" routerLink="/mi-informacion" *ngIf="!auth.isStaff()">Mi información</a>
+        <button class="nav-link nav-logout" (click)="logout()">Cerrar sesión</button>
+      </ng-container>
+      <ng-template #noLogueado>
+        <a class="nav-link" routerLink="/login">Ingresar</a>
+      </ng-template>
     </nav>
   </div>
 </header>

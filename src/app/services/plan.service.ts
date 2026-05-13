@@ -3,12 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Plan } from '../models/plan.model';
 
-export interface CreatePlanDto {
-  nombre: string;
-  precio: number;
-  duracion_dias: number;
-}
-
 @Injectable({
   providedIn: 'root',
 })
@@ -19,9 +13,5 @@ export class PlanService {
 
   getPlanes(): Observable<Plan[]> {
     return this.http.get<Plan[]>(this.apiUrl);
-  }
-
-  createPlan(plan: CreatePlanDto): Observable<Plan> {
-    return this.http.post<Plan>(this.apiUrl, plan);
   }
 }
