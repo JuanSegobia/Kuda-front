@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService, CurrentUser } from '../../services/auth.service';
 
 @Component({
   selector: 'app-mi-informacion',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './mi-informacion.component.html',
   styleUrl: './mi-informacion.component.css',
 })

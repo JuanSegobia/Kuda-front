@@ -1,5 +1,6 @@
 <div class="container" style="padding-top: 2rem; max-width: 640px;">
   <div class="card card-pad" *ngIf="usuario">
+
     <h2>Mi información</h2>
     <p class="help">Tus datos personales registrados en el sistema.</p>
 
@@ -29,7 +30,7 @@
     </div>
 
     <div class="info-actions">
-      <button class="btn btn-primary">Modificar datos personales</button>
+      <a routerLink="/editar-perfil" class="btn btn-primary">Modificar datos personales</a>
     </div>
   </div>
 </div>

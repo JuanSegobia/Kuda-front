@@ -56,6 +56,20 @@ export class AuthService {
     );
   }
 
+  actualizarPerfil(data: { nombre: string; apellido: string; telefono?: string }): Observable<CurrentUser> {
+    return this.http.put<CurrentUser>(`${this.apiUrl}/me`, data).pipe(
+      tap((usuario) => this.setUser(usuario))
+    );
+  }
+
+  recuperarPassword(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/recuperar`, { email });
+  }
+
+  nuevaPassword(token: string, password: string, confirmPassword: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/nueva-password/${encodeURIComponent(token)}`, { password, confirmPassword });
+  }
+
   login(data: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, data).pipe(
       tap((resp) => {
