@@ -3,51 +3,39 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Usuario, UsuarioService, CreateUsuarioDto } from '../../services/usuario.service';
 import { Clase, ClaseService, CreateClaseDto } from '../../services/clase.service';
 import { Profesor, ProfesorService } from '../../services/profesor.service';
 import { PlanService } from '../../services/plan.service';
 import { Plan } from '../../models/plan.model';
 import { AuthService, CurrentUser } from '../../services/auth.service';
+import { UsuariosListComponent } from '../usuarios-list/usuarios-list.component';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, UsuariosListComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
 export class AdminDashboardComponent {
-  tab: 'planes' | 'usuarios' | 'clases' | 'profesores' = 'planes';
+  tab: 'planes' | 'usuarios' | 'clases' | 'profesores' = 'usuarios';
 
   planes: Plan[] = [];
-  usuarios: Usuario[] = [];
   clases: Clase[] = [];
   profesores: Profesor[] = [];
 
   loading = {
     planes: false,
-    usuarios: false,
     clases: false,
     profesores: false,
   };
 
   error = {
     planes: '',
-    usuarios: '',
     clases: '',
     profesores: '',
   };
 
-  createUsuario: CreateUsuarioDto = {
-    email: '',
-    dni: '',
-    nombre: '',
-    apellido: '',
-    telefono: '',
-    password: '',
-    rol_id: 2,
-  };
   createClase: CreateClaseDto = {
     dia_semana: 'Lunes',
     hora_inicio: '09:00',
@@ -68,14 +56,12 @@ export class AdminDashboardComponent {
 
   constructor(
     private readonly planService: PlanService,
-    private readonly usuarioService: UsuarioService,
     private readonly claseService: ClaseService,
     private readonly profesorService: ProfesorService,
     private readonly authService: AuthService,
     private readonly router: Router
   ) {
     this.currentUser = this.authService.getCurrentUser();
-    this.refreshPlanes();
   }
 
   logout(): void {
@@ -87,7 +73,6 @@ export class AdminDashboardComponent {
     this.tab = tab;
 
     if (tab === 'planes' && this.planes.length === 0) this.refreshPlanes();
-    if (tab === 'usuarios' && this.usuarios.length === 0) this.refreshUsuarios();
     if (tab === 'clases' && this.clases.length === 0) this.refreshClases();
     if (tab === 'profesores' && this.profesores.length === 0) this.refreshProfesores();
   }
@@ -103,64 +88,6 @@ export class AdminDashboardComponent {
       error: () => {
         this.error.planes = 'No se pudieron cargar los planes.';
         this.loading.planes = false;
-      },
-    });
-  }
-
-  refreshUsuarios(): void {
-    this.loading.usuarios = true;
-    this.error.usuarios = '';
-    this.usuarioService.getAll().subscribe({
-      next: (data) => {
-        this.usuarios = data ?? [];
-        this.loading.usuarios = false;
-      },
-      error: () => {
-        this.error.usuarios = 'No se pudieron cargar los usuarios.';
-        this.loading.usuarios = false;
-      },
-    });
-  }
-
-  onCreateUsuario(): void {
-    this.error.usuarios = '';
-    const u = this.createUsuario;
-    if (!u.email || !u.dni || !u.nombre || !u.apellido || !u.password || Number(u.rol_id) <= 0) {
-      this.error.usuarios = 'Completá email, DNI, nombre, apellido, contraseña y rol.';
-      return;
-    }
-
-    this.usuarioService
-      .create({
-        email: u.email,
-        dni: u.dni,
-        nombre: u.nombre,
-        apellido: u.apellido,
-        telefono: u.telefono || undefined,
-        password: u.password,
-        rol_id: Number(u.rol_id),
-      })
-      .subscribe({
-        next: () => {
-          this.createUsuario = { email: '', dni: '', nombre: '', apellido: '', telefono: '', password: '', rol_id: 2 };
-          this.refreshUsuarios();
-        },
-        error: (err) => {
-          this.error.usuarios =
-            err?.error?.message ?? 'No se pudo crear el usuario.';
-        },
-      });
-  }
-
-  onDeleteUsuario(email: string): void {
-    this.error.usuarios = '';
-    this.usuarioService.delete(email).subscribe({
-      next: () => {
-        this.refreshUsuarios();
-      },
-      error: (err) => {
-        this.error.usuarios =
-          err?.error?.message ?? 'No se pudo dar de baja el usuario.';
       },
     });
   }
@@ -274,5 +201,4 @@ export class AdminDashboardComponent {
         },
       });
   }
-
 }

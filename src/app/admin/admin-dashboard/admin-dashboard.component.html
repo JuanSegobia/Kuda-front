@@ -57,73 +57,8 @@
     </div>
   </section>
 
-  <!-- USUARIOS -->
-  <section *ngIf="tab === 'usuarios'" class="card">
-    <div class="card-head">
-      <h3>Usuarios</h3>
-      <button (click)="refreshUsuarios()">Refrescar</button>
-    </div>
-
-    <p class="error" *ngIf="error.usuarios">{{ error.usuarios }}</p>
-    <p class="muted" *ngIf="loading.usuarios">Cargando…</p>
-
-    <div class="grid grid-2">
-      <label>
-        <span>Email</span>
-        <input type="email" [(ngModel)]="createUsuario.email" />
-      </label>
-      <label>
-        <span>DNI</span>
-        <input [(ngModel)]="createUsuario.dni" />
-      </label>
-      <label>
-        <span>Nombre</span>
-        <input [(ngModel)]="createUsuario.nombre" />
-      </label>
-      <label>
-        <span>Apellido</span>
-        <input [(ngModel)]="createUsuario.apellido" />
-      </label>
-      <label>
-        <span>Teléfono</span>
-        <input [(ngModel)]="createUsuario.telefono" />
-      </label>
-      <label>
-        <span>Contraseña</span>
-        <input type="password" [(ngModel)]="createUsuario.password" />
-      </label>
-      <label>
-        <span>Rol ID</span>
-        <input type="number" [(ngModel)]="createUsuario.rol_id" />
-      </label>
-      <div class="actions">
-        <button (click)="onCreateUsuario()">Crear usuario</button>
-      </div>
-    </div>
-
-    <div class="table">
-      <div class="row head">
-        <div>Email</div>
-        <div>Nombre</div>
-        <div>Apellido</div>
-        <div>DNI</div>
-        <div>Activo</div>
-        <div></div>
-      </div>
-      <div class="row" *ngFor="let u of usuarios">
-        <div>{{ u.email }}</div>
-        <div>{{ u.nombre }}</div>
-        <div>{{ u.apellido }}</div>
-        <div>{{ u.dni }}</div>
-        <div>{{ u.activo ? 'Sí' : 'No' }}</div>
-        <div class="right">
-          <button class="danger" (click)="onDeleteUsuario(u.email)">
-            Dar de baja
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- USUARIOS (HU "Listar usuarios" + "Filtrar usuarios" + atajo a "Editar usuario") -->
+  <app-usuarios-list *ngIf="tab === 'usuarios'"></app-usuarios-list>
 
   <!-- CLASES -->
   <section *ngIf="tab === 'clases'" class="card">

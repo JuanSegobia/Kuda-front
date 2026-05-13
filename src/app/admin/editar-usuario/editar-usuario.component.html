@@ -1,7 +1,22 @@
-<div class="container" style="padding-top: 2rem; max-width: 640px;">
-  <div class="card card-pad">
-    <h2>Modificar datos personales</h2>
-    <p class="help">Actualizá tu nombre, apellido, género, fecha de nacimiento y teléfono.</p>
+<div class="container" style="padding-top: 2rem; max-width: 720px;">
+
+  <div class="card card-pad" *ngIf="isLoading">
+    <p class="help">Cargando datos del usuario…</p>
+  </div>
+
+  <div class="card card-pad" *ngIf="!isLoading && loadError">
+    <p class="error-text">{{ loadError }}</p>
+    <div class="form-actions">
+      <a class="btn btn-secondary" routerLink="/admin">Volver al panel</a>
+    </div>
+  </div>
+
+  <div class="card card-pad" *ngIf="!isLoading && !loadError && usuario">
+    <h2>Editar usuario</h2>
+    <p class="help">
+      Estás editando a <strong>{{ usuario.nombre }} {{ usuario.apellido }}</strong>
+      <span class="muted-inline"> ({{ usuario.email }})</span>.
+    </p>
 
     <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="form-row form-row-2">
@@ -27,6 +42,29 @@
           <div class="error-text" *ngIf="form.controls.apellido.touched && form.controls.apellido.hasError('required')">
             El apellido es obligatorio.
           </div>
+        </div>
+      </div>
+
+      <div class="form-row form-row-2">
+        <div class="field">
+          <div class="label">DNI</div>
+          <input
+            class="control"
+            formControlName="dni"
+            inputmode="numeric"
+            [attr.aria-invalid]="form.controls.dni.touched && form.controls.dni.invalid ? 'true' : 'false'"
+          />
+          <div class="error-text" *ngIf="form.controls.dni.touched && form.controls.dni.hasError('required')">
+            El DNI es obligatorio.
+          </div>
+          <div class="error-text" *ngIf="form.controls.dni.touched && (form.controls.dni.hasError('minlength') || form.controls.dni.hasError('maxlength'))">
+            Ingresá un DNI válido.
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="label">Teléfono</div>
+          <input class="control" formControlName="telefono" inputmode="tel" />
         </div>
       </div>
 
@@ -58,25 +96,20 @@
         </div>
       </div>
 
-      <div class="field">
-        <div class="label">Teléfono</div>
-        <input
-          class="control"
-          formControlName="telefono"
-          inputmode="tel"
-        />
-      </div>
-
       <div class="error-text" *ngIf="submitError">{{ submitError }}</div>
       <div class="help success-banner" *ngIf="successMessage">
         {{ successMessage }}
       </div>
 
       <div class="form-actions">
-        <button class="btn btn-primary" type="submit" [disabled]="isSubmitting || form.invalid">
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="isSubmitting || form.invalid || !!successMessage"
+        >
           {{ isSubmitting ? 'Guardando…' : 'Guardar cambios' }}
         </button>
-        <a class="help" routerLink="/mi-informacion">Volver a mi información</a>
+        <a class="btn btn-secondary" routerLink="/admin">Cancelar</a>
       </div>
     </form>
   </div>

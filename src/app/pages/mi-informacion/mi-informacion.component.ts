@@ -22,4 +22,23 @@ export class MiInformacionComponent implements OnInit {
     this.usuario = this.auth.getCurrentUser();
     if (!this.usuario) void this.router.navigateByUrl('/login');
   }
+
+  get generoLabel(): string {
+    const valor = this.usuario?.genero;
+    if (!valor) return '—';
+    const map: Record<string, string> = {
+      femenino: 'Femenino',
+      masculino: 'Masculino',
+      otro: 'Otro',
+    };
+    return map[valor.toLowerCase()] ?? valor;
+  }
+
+  get fechaNacimientoLabel(): string {
+    const iso = this.usuario?.fechaNacimiento;
+    if (!iso) return '—';
+    const [anio, mes, dia] = iso.split('-');
+    if (!anio || !mes || !dia) return iso;
+    return `${dia}/${mes}/${anio}`;
+  }
 }

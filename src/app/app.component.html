@@ -9,13 +9,17 @@
     </a>
 
     <nav class="main-nav" aria-label="Navegación principal">
-      <a class="nav-link" routerLink="/catalogo">Actividades</a>
+      <a class="nav-link" routerLink="/catalogo" routerLinkActive="nav-link-active">Actividades</a>
       <ng-container *ngIf="auth.isLoggedIn(); else noLogueado">
-        <a class="nav-link" routerLink="/mi-informacion" *ngIf="!auth.isStaff()">Mi información</a>
+        <ng-container *ngIf="!auth.isStaff()">
+          <a class="nav-link" routerLink="/mi-informacion" routerLinkActive="nav-link-active">Mi información</a>
+          <a class="nav-link" routerLink="/mis-reservas" routerLinkActive="nav-link-active">Mis reservas</a>
+          <a class="nav-link" routerLink="/cambiar-password" routerLinkActive="nav-link-active">Cambiar contraseña</a>
+        </ng-container>
         <button class="nav-link nav-logout" (click)="logout()">Cerrar sesión</button>
       </ng-container>
       <ng-template #noLogueado>
-        <a class="nav-link" routerLink="/login">Ingresar</a>
+        <a class="nav-link" routerLink="/login" routerLinkActive="nav-link-active">Ingresar</a>
       </ng-template>
     </nav>
   </div>

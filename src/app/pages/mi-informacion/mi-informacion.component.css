@@ -44,4 +44,18 @@
 
 .info-actions {
   margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+@media (min-width: 540px) {
+  .info-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .info-actions .btn {
+    flex: 1 1 auto;
+  }
 }

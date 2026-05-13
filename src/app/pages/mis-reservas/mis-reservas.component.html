@@ -1,0 +1,88 @@
+<div class="container" style="padding-top: 1.25rem;">
+  <header class="reservas-head">
+    <h2>Mis reservas actuales</h2>
+    <p class="help">Estas son tus reservas vigentes en CEF Actividades.</p>
+  </header>
+
+  <div class="card card-pad" *ngIf="isLoading">
+    <p class="help">Cargando…</p>
+  </div>
+
+  <div class="card card-pad" *ngIf="!isLoading && errorMsg">
+    <p class="error-text">{{ errorMsg }}</p>
+  </div>
+
+  <div class="card card-pad empty-state" *ngIf="!isLoading && !errorMsg && reservas.length === 0">
+    <h3>No posee reservas</h3>
+    <p class="help">Cuando reserves una clase, vas a verla acá.</p>
+    <div class="form-actions">
+      <a class="btn btn-primary" routerLink="/catalogo">Ver actividades</a>
+    </div>
+  </div>
+
+  <ul class="reservas-grid" *ngIf="!isLoading && !errorMsg && reservas.length > 0">
+    <li class="card card-pad reserva-card" *ngFor="let r of reservas">
+      <div class="reserva-head">
+        <h3 class="reserva-actividad">{{ r.actividad }}</h3>
+        <span class="reserva-badge" [class.badge-individual]="r.modalidad === 'INDIVIDUAL'">
+          {{ modalidadLabel(r.modalidad) }}
+        </span>
+      </div>
+
+      <dl class="reserva-info">
+        <div class="reserva-info-row">
+          <dt>Día</dt>
+          <dd>{{ r.diaSemana }}</dd>
+        </div>
+        <div class="reserva-info-row">
+          <dt>Horario</dt>
+          <dd>{{ r.horaInicio }} – {{ r.horaFin }}</dd>
+        </div>
+        <div class="reserva-info-row" *ngIf="r.proximaFecha">
+          <dt>Próxima fecha</dt>
+          <dd>{{ r.proximaFecha }}</dd>
+        </div>
+      </dl>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="verDetalle(r)">
+          Ver detalle
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<dialog #detalleDialog class="detalle-dialog" (close)="reservaSeleccionada = null">
+  <div class="card card-pad detalle-card" *ngIf="reservaSeleccionada as r">
+    <header class="detalle-head">
+      <h3>{{ r.actividad }}</h3>
+      <span class="reserva-badge" [class.badge-individual]="r.modalidad === 'INDIVIDUAL'">
+        {{ modalidadLabel(r.modalidad) }}
+      </span>
+    </header>
+
+    <dl class="reserva-info">
+      <div class="reserva-info-row">
+        <dt>Día</dt>
+        <dd>{{ r.diaSemana }}</dd>
+      </div>
+      <div class="reserva-info-row">
+        <dt>Horario</dt>
+        <dd>{{ r.horaInicio }} – {{ r.horaFin }}</dd>
+      </div>
+      <div class="reserva-info-row" *ngIf="r.proximaFecha">
+        <dt>Próxima fecha</dt>
+        <dd>{{ r.proximaFecha }}</dd>
+      </div>
+      <div class="reserva-info-row">
+        <dt>Estado</dt>
+        <dd>{{ r.estado === 'VIGENTE' ? 'Vigente' : 'En período de gracia' }}</dd>
+      </div>
+    </dl>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-primary" (click)="cerrarDetalle()">Cerrar</button>
+    </div>
+  </div>
+</dialog>
